@@ -1,0 +1,1864 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kho Sách | Thư Viện Tri Thức & Sách Hay</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #080a10;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --card-border-glow: rgba(255, 255, 255, 0.25);
+      --glass-surface: rgba(18, 22, 36, 0.65);
+      --text-primary: #f5f5f7;
+      --text-secondary: #a1a1a6;
+      --text-tertiary: #6e6e73;
+      --apple-blue: #0071e3;
+      --apple-blue-glow: rgba(0, 113, 227, 0.45);
+      --apple-cyan: #30d158;
+      --apple-purple: #bf5af2;
+      --apple-pink: #ff375f;
+      --apple-gold: #f59e0b;
+      --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+      --gold-glow: rgba(255, 170, 0, 0.5);
+      --liquid-spring: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "SF Pro Text", "Segoe UI", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Ambient Liquid Mesh Background */
+    .ambient-mesh {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .liquid-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.55;
+      animation: float 22s infinite alternate ease-in-out;
+    }
+    .liquid-orb.orb-1 {
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, #0071e3 0%, rgba(0, 113, 227, 0) 70%);
+      top: -10%;
+      left: 10%;
+      animation-duration: 24s;
+    }
+    .liquid-orb.orb-2 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, #bf5af2 0%, rgba(191, 90, 242, 0) 70%);
+      top: 35%;
+      right: -5%;
+      animation-duration: 28s;
+      animation-delay: -5s;
+    }
+    .liquid-orb.orb-3 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #ff375f 0%, rgba(255, 55, 95, 0) 70%);
+      bottom: -10%;
+      left: 25%;
+      animation-duration: 20s;
+      animation-delay: -10s;
+    }
+    .liquid-orb.orb-4 {
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, #f59e0b 0%, rgba(245, 158, 11, 0) 70%);
+      top: 60%;
+      left: -10%;
+      animation-duration: 32s;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+      50% { transform: translate(60px, 40px) scale(1.08) rotate(10deg); }
+      100% { transform: translate(-40px, 70px) scale(0.95) rotate(-10deg); }
+    }
+
+    .noise-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.015) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 32px 24px 100px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Frosted Liquid Glass Utility */
+    .liquid-glass {
+      background: var(--glass-surface);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      transition: all 0.35s var(--liquid-spring);
+    }
+
+    /* Top Floating Navigation */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 28px;
+      margin-bottom: 36px;
+      position: sticky;
+      top: 20px;
+      z-index: 50;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .brand-text h1 {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      background: linear-gradient(180deg, #FFFFFF 0%, #E2E8F0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 980px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      transition: all 0.28s var(--liquid-spring);
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-vip {
+      background: var(--gold-gradient);
+      color: #000;
+      font-weight: 800;
+      box-shadow: 0 4px 20px var(--gold-glow), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      animation: vipPulse 3s infinite;
+    }
+    .btn-vip:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 28px rgba(255, 170, 0, 0.7), inset 0 1px 0 #fff;
+    }
+    @keyframes vipPulse {
+      0%, 100% { box-shadow: 0 4px 18px var(--gold-glow); }
+      50% { box-shadow: 0 4px 30px rgba(255, 170, 0, 0.75); }
+    }
+
+    .btn-vip-active {
+      background: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      font-weight: 700;
+      cursor: default;
+    }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #0077ED 0%, #0062C4 100%);
+      color: white;
+      box-shadow: 0 4px 18px var(--apple-blue-glow), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(0, 113, 227, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .stat-info .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+    .stat-info .stat-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Filter & Search Bar */
+    .filter-section {
+      padding: 24px 28px;
+      margin-bottom: 32px;
+    }
+    .search-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .search-wrapper {
+      position: relative;
+      flex: 1;
+    }
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 16px;
+      pointer-events: none;
+    }
+    .search-input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      color: #fff;
+      font-size: 14.5px;
+      outline: none;
+      transition: all 0.25s var(--liquid-spring);
+    }
+    .search-input:focus {
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.3);
+      background: rgba(0, 0, 0, 0.4);
+    }
+    .search-clear {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      color: #fff;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    /* Filter Controls Row */
+    .controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill {
+      padding: 7px 16px;
+      border-radius: 980px;
+      font-size: 12.5px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.25s var(--liquid-spring);
+    }
+    .pill:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .pill.active {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+      box-shadow: 0 4px 14px rgba(255, 255, 255, 0.3);
+    }
+
+    .dropdown-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .custom-select {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #fff;
+      padding: 8px 14px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Books Grid */
+    .grid-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding: 0 6px;
+    }
+    .grid-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    .grid-count {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 28px;
+    }
+
+    /* Liquid Book Card */
+    .book-card {
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.4s var(--liquid-spring);
+    }
+    .book-card:hover {
+      transform: translateY(-8px) scale(1.015);
+      border-color: var(--card-border-glow);
+      box-shadow: 0 26px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 113, 227, 0.2);
+    }
+
+    .cover-container {
+      width: 100%;
+      height: 380px;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+      margin-bottom: 16px;
+    }
+    .cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s var(--liquid-spring);
+    }
+    .book-card:hover .cover-img {
+      transform: scale(1.04);
+    }
+
+    .cover-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 4px 10px;
+      border-radius: 980px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #fff;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .book-category {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--apple-blue);
+      margin-bottom: 6px;
+    }
+    .book-title {
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.3px;
+      color: #fff;
+      margin-bottom: 6px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .book-author {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .book-desc {
+      font-size: 12.5px;
+      color: var(--text-tertiary);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 16px;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .read-btn {
+      flex: 1;
+      padding: 8px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 12.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .read-btn:hover {
+      background: var(--apple-blue);
+      border-color: var(--apple-blue);
+      box-shadow: 0 4px 14px var(--apple-blue-glow);
+    }
+    .read-btn.vip-locked {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+    }
+    .read-btn.vip-locked:hover {
+      background: var(--gold-gradient);
+      color: #000;
+      border-color: transparent;
+      box-shadow: 0 4px 16px var(--gold-glow);
+    }
+
+    .action-icons {
+      display: flex;
+      gap: 6px;
+    }
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 980px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    .icon-btn.danger:hover {
+      background: var(--apple-pink);
+      border-color: var(--apple-pink);
+    }
+
+    /* Modal / Sheets */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s var(--liquid-spring);
+    }
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+    .modal-sheet {
+      width: 100%;
+      max-width: 600px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      border-radius: 28px;
+      background: rgba(22, 27, 44, 0.92);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      transform: scale(0.94) translateY(20px);
+      transition: all 0.35s var(--liquid-spring);
+    }
+    .modal-overlay.active .modal-sheet {
+      transform: scale(1) translateY(0);
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .modal-header h3 {
+      font-size: 21px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+    }
+    .close-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: background 0.2s;
+    }
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* VIP Modal Exclusive Styling */
+    .vip-card-banner {
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 140, 0, 0.05) 100%);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .vip-badge-tag {
+      display: inline-block;
+      background: var(--gold-gradient);
+      color: #000;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 980px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .vip-price {
+      font-size: 44px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .vip-price span {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .vip-benefits {
+      list-style: none;
+      text-align: left;
+      margin: 20px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .vip-benefits li {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .vip-benefits li .icon {
+      color: #fbbf24;
+      font-size: 16px;
+    }
+
+    /* Reader Sheet Styling */
+    .reader-modal {
+      max-width: 760px;
+    }
+    .reader-body {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 28px 32px;
+      font-family: Georgia, 'Playfair Display', serif;
+      font-size: 17px;
+      line-height: 1.85;
+      color: #e2e8f0;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    .reader-body h4 {
+      font-family: -apple-system, sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Form Inputs */
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--apple-blue);
+      box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.3);
+    }
+    textarea.form-control {
+      resize: vertical;
+      min-height: 85px;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* Cover File Drag & Drop */
+    .dropzone {
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+    .dropzone input {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .preview-box {
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 12px;
+      border-radius: 10px;
+    }
+    .preview-box img {
+      width: 48px;
+      height: 68px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(18, 22, 36, 0.95);
+      backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 980px;
+      padding: 10px 24px;
+      color: #fff;
+      font-size: 13.5px;
+      font-weight: 600;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: dropDown 0.4s var(--liquid-spring);
+    }
+    @keyframes dropDown {
+      0% { transform: translateY(-40px) scale(0.85); opacity: 0; }
+      100% { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      grid-column: 1 / -1;
+    }
+    .empty-state-icon {
+      font-size: 54px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .controls-row { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 600px) {
+      .container { padding: 16px 12px 60px; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .nav-bar { padding: 12px 18px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Ambient Glow -->
+  <div class="ambient-mesh">
+    <div class="liquid-orb orb-1"></div>
+    <div class="liquid-orb orb-2"></div>
+    <div class="liquid-orb orb-3"></div>
+    <div class="liquid-orb orb-4"></div>
+  </div>
+  <div class="noise-layer"></div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="container">
+    <!-- Top Nav -->
+    <header class="nav-bar liquid-glass">
+      <a href="/" class="brand">
+        <div class="brand-icon">📚</div>
+        <div class="brand-text">
+          <h1>Kho Sách</h1>
+          <p>Nền tảng đọc sách & tri thức tinh hoa</p>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <!-- VIP Button -->
+        <button id="vipBtn" class="btn btn-vip" onclick="openVipModal()">
+          <span>👑</span> Mua VIP ($100)
+        </button>
+        <button class="btn btn-secondary" onclick="openAuthorCatModal()">
+          <span>🏷ï¸</span> Tác Giả & Thể Loại
+        </button>
+        <button class="btn btn-primary" onclick="openAddBookModal()">
+          <span>+</span> Thêm Sách Mới
+        </button>
+      </div>
+    </header>
+
+    <!-- KPI Stats -->
+    <section class="stats-grid">
+      <div class="stat-card liquid-glass">
+        <div class="stat-icon" style="color: var(--apple-blue);">📚</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statTotalBooks">-</div>
+          <div class="stat-label">Tổng Số Cuốn Sách</div>
+        </div>
+      </div>
+      <div class="stat-card liquid-glass">
+        <div class="stat-icon" style="color: var(--apple-purple);">✍ï¸</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statTotalAuthors">-</div>
+          <div class="stat-label">Tác Giả Nổi Tiếng</div>
+        </div>
+      </div>
+      <div class="stat-card liquid-glass">
+        <div class="stat-icon" style="color: var(--apple-cyan);">📑</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statTotalCategories">-</div>
+          <div class="stat-label">Chuyên Mục Tuyển Chọn</div>
+        </div>
+      </div>
+      <div class="stat-card liquid-glass">
+        <div class="stat-icon" style="color: var(--apple-gold);">👑</div>
+        <div class="stat-info">
+          <div class="stat-value" id="statVipStatus">Miễn Phí</div>
+          <div class="stat-label">Tài Khoản Hiện Tại</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filters -->
+    <section class="filter-section liquid-glass">
+      <div class="search-row">
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Tìm kiếm tác phẩm theo tiêu đề, tác giả hoặc tóm tắt... (Ctrl + K)"
+            autocomplete="off"
+          >
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+      </div>
+
+      <div class="controls-row">
+        <div class="category-pills" id="categoryPills">
+          <button class="pill active" onclick="selectCategory(null, this)">Tất Cả Thể Loại</button>
+        </div>
+
+        <div class="dropdown-group">
+          <select id="authorSelectFilter" class="custom-select" onchange="filterBooks()">
+            <option value="">Tất Cả Tác Giả</option>
+          </select>
+
+          <select id="sortSelect" class="custom-select" onchange="filterBooks()">
+            <option value="id-desc">Mới thêm gần đây</option>
+            <option value="published_year-desc">Năm xuất bản: Mới nhất</option>
+            <option value="published_year-asc">Năm xuất bản: Cũ nhất</option>
+            <option value="title-asc">Tên sách: A â†’ Z</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Books Gallery -->
+    <section>
+      <div class="grid-header">
+        <h2>Bộ Sưu Tập Tác Phẩm</h2>
+        <div class="grid-count" id="booksCount">Đang tải dữ liệu...</div>
+      </div>
+
+      <div class="books-grid" id="booksGrid"></div>
+    </section>
+  </div>
+
+  <!-- Modal: Mua VIP 100 USD -->
+  <div class="modal-overlay" id="vipModal" onclick="handleOverlayClick(event, 'vipModal')">
+    <div class="modal-sheet liquid-glass" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>Nâng Cấp Gói VIP Kho Sách</h3>
+        <button class="close-btn" onclick="closeModal('vipModal')">✕</button>
+      </div>
+
+      <div class="vip-card-banner">
+        <div class="vip-badge-tag">GÓI TRỌN ĐỜI CAO CẤP</div>
+        <div class="vip-price">$100 <span>USD / Trọn Đời</span></div>
+        <p style="font-size: 13.5px; color: var(--text-secondary);">Mở khóa toàn bộ kho tri thức tinh hoa thế giới chỉ với một lần thanh toán duy nhất.</p>
+      </div>
+
+      <ul class="vip-benefits">
+        <li><span class="icon">✓</span> <span><strong>Đọc toàn bộ nội dung sách</strong> không giới hạn chương.</span></li>
+        <li><span class="icon">✓</span> <span>Bản dịch chuẩn nguyên tác độc quyền &amp; cập nhật liên tục.</span></li>
+        <li><span class="icon">✓</span> <span>Tải Ebook định dạng PDF &amp; EPUB tương thích mọi thiết bị.</span></li>
+        <li><span class="icon">✓</span> <span>Trải nghiệm đọc tinh gọn không quảng cáo, giao diện Liquid Apple.</span></li>
+        <li><span class="icon">✓</span> <span>Hỗ trợ ưu tiên 24/7 từ đội ngũ biên tập viên Kho Sách.</span></li>
+      </ul>
+
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 24px;">
+        <button class="btn btn-vip" id="confirmVipBtn" onclick="processVipPayment()" style="width: 100%; padding: 14px; font-size: 15px;">
+          <span>👑</span> Xác Nhận Mua Gói VIP ($100 USD)
+        </button>
+        <button class="btn btn-secondary" onclick="closeModal('vipModal')">Để Sau</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Đọc Sách VIP Reader -->
+  <div class="modal-overlay" id="readerModal" onclick="handleOverlayClick(event, 'readerModal')">
+    <div class="modal-sheet liquid-glass reader-modal">
+      <div class="modal-header">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase;">👑 NỘI DUNG VIP ĐÃ MỞ KHÓA</span>
+          <h3 id="readerBookTitle" style="font-size: 20px; margin-top: 4px;">Đọc Tác Phẩm</h3>
+        </div>
+        <button class="close-btn" onclick="closeModal('readerModal')">✕</button>
+      </div>
+
+      <div class="reader-body" id="readerContent">
+        <!-- Content will be injected -->
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+        <span style="font-size: 12.5px; color: var(--text-secondary);">Thành viên VIP: Đã thanh toán gói 100 USD</span>
+        <button class="btn btn-secondary" onclick="closeModal('readerModal')">Đóng Trình Đọc</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Thêm / Sửa Sách -->
+  <div class="modal-overlay" id="bookModal" onclick="handleOverlayClick(event, 'bookModal')">
+    <div class="modal-sheet liquid-glass">
+      <div class="modal-header">
+        <h3 id="modalTitle">Thêm Sách Mới</h3>
+        <button class="close-btn" onclick="closeModal('bookModal')">✕</button>
+      </div>
+
+      <form id="bookForm" onsubmit="handleBookSubmit(event)">
+        <input type="hidden" id="bookId">
+
+        <div class="form-group">
+          <label>Tiêu Đề Sách *</label>
+          <input type="text" id="bookTitle" class="form-control" placeholder="Ví dụ: Đắc Nhân Tâm..." required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tên Tác Giả *</label>
+            <input type="text" id="bookAuthorName" class="form-control" placeholder="Nhập tên tác giả (VD: Haruki Murakami, Steve Jobs...)" required>
+          </div>
+          <div class="form-group">
+            <label>Thể Loại Sách *</label>
+            <input type="text" id="bookCategoryName" class="form-control" placeholder="Nhập thể loại (VD: Tiểu Thuyết, Triết Học, Lịch Sử...)" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Năm Xuất Bản *</label>
+            <input type="number" id="bookYear" class="form-control" placeholder="Ví dụ: 2024" min="1000" max="2100" required>
+          </div>
+          <div class="form-group">
+            <label>Ảnh Bìa (Chọn Mẫu Sẵn)</label>
+            <select id="presetCoverSelect" class="form-control" onchange="selectPresetCover(this.value)">
+              <option value="">-- Chọn Mẫu Bìa --</option>
+              <option value="./covers/the-alchemist.png">Nhà Giả Kim (Vàng Gold)</option>
+              <option value="./covers/atomic-habits.png">Atomic Habits (Đỏ Crimson)</option>
+              <option value="./covers/dac-nhan-tam.png">Đắc Nhân Tâm (Xanh Sapphire)</option>
+              <option value="./covers/sapiens.png">Sapiens (Tím Vũ Trụ)</option>
+              <option value="./covers/clean-code.png">Clean Code (Xanh Ngọc)</option>
+              <option value="./covers/thinking-fast-and-slow.png">Tư Duy Nhanh & Chậm (Cyan)</option>
+              <option value="./covers/deep-work.png">Deep Work (Hồng Neon)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Hoặc Tải Lên Ảnh Bìa Tùy Chọn</label>
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="coverFileInput" accept="image/*" onchange="handleCoverFileSelected(event)">
+            <div>📁 Kéo thả file ảnh hoặc nhấp để tải bìa lên (PNG, JPG, WEBP, SVG)</div>
+            <div class="preview-box" id="coverPreviewBox">
+              <img id="coverPreviewImg" src="" alt="Preview">
+              <span id="coverPreviewName" style="font-size: 13px; color: var(--text-secondary);"></span>
+            </div>
+          </div>
+          <input type="hidden" id="bookCoverImage">
+        </div>
+
+        <div class="form-group">
+          <label>Mô Tả / Tóm Tắt Tác Phẩm</label>
+          <textarea id="bookDescription" class="form-control" placeholder="Viết giới thiệu ngắn gọn về tác phẩm..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Nội Dung Sách / Trích Đoạn</label>
+          <textarea id="bookContent" class="form-control" placeholder="Nhập nội dung bạn có quyền chia sẻ. Có thể dùng xuống dòng để chia chương..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Liên Kết Nguồn Sách Chính Thống</label>
+          <input type="url" id="bookSourceUrl" class="form-control" placeholder="https://...">
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('bookModal')">Hủy</button>
+          <button type="submit" class="btn btn-primary" id="saveBookBtn">Lưu Tác Phẩm</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Quản Lý Tác Giả & Thể Loại -->
+  <div class="modal-overlay" id="authorCatModal" onclick="handleOverlayClick(event, 'authorCatModal')">
+    <div class="modal-sheet liquid-glass">
+      <div class="modal-header">
+        <h3>Quản Lý Tác Giả & Thể Loại</h3>
+        <button class="close-btn" onclick="closeModal('authorCatModal')">✕</button>
+      </div>
+
+      <div style="margin-bottom: 24px;">
+        <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--apple-blue);">+ Thêm Tác Giả Mới</h4>
+        <form id="authorForm" onsubmit="handleAddAuthor(event)" style="display: flex; gap: 10px;">
+          <input type="text" id="newAuthorName" class="form-control" placeholder="Tên tác giả..." required>
+          <input type="text" id="newAuthorBio" class="form-control" placeholder="Tiểu sử ngắn...">
+          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Thêm</button>
+        </form>
+      </div>
+
+      <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">
+
+      <div>
+        <h4 style="font-size: 16px; margin-bottom: 12px; color: var(--apple-purple);">+ Thêm Thể Loại Mới</h4>
+        <form id="categoryForm" onsubmit="handleAddCategory(event)" style="display: flex; gap: 10px;">
+          <input type="text" id="newCategoryName" class="form-control" placeholder="Tên thể loại..." required>
+          <input type="text" id="newCategoryDesc" class="form-control" placeholder="Mô tả thể loại...">
+          <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Thêm</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Chi Tiết Tác Phẩm -->
+  <div class="modal-overlay" id="detailModal" onclick="handleOverlayClick(event, 'detailModal')">
+    <div class="modal-sheet liquid-glass" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3 id="detailTitle">Chi Tiết Tác Phẩm</h3>
+        <button class="close-btn" onclick="closeModal('detailModal')">✕</button>
+      </div>
+      <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+        <div style="width: 200px; flex-shrink: 0;">
+          <img id="detailCover" src="" alt="Book Cover" style="width: 100%; border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        </div>
+        <div style="flex: 1; min-width: 260px;">
+          <div id="detailCategory" style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--apple-blue); margin-bottom: 4px;"></div>
+          <h2 id="detailBookTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 10px; line-height: 1.3;"></h2>
+          <div id="detailAuthor" style="font-size: 14px; color: var(--text-secondary); margin-bottom: 14px;"></div>
+          <div style="margin-bottom: 16px;">
+            <span id="detailYear" class="year-tag" style="background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 8px; font-size: 12px;"></span>
+          </div>
+          <p id="detailDesc" style="font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px;"></p>
+          <a id="detailSourceLink" class="btn btn-secondary" target="_blank" rel="noopener noreferrer" style="display:none; width:100%; margin-bottom:10px; text-align:center;">Mở nguồn sách chính thống</a>
+          <button id="detailEditBtn" class="btn btn-secondary" style="display:none; width:100%; margin-bottom:10px;" onclick="editBookFromDetail()">Chỉnh sửa sách của tôi</button>
+          <button id="detailReadBtn" class="btn btn-primary" style="width: 100%;">
+            <span>📖</span> Đọc Sách Ngay
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State
+    let booksData = [];
+    let authorsData = [];
+    let categoriesData = [];
+    let currentCategoryId = null;
+    let pendingCoverFile = null;
+    let isVipUser = localStorage.getItem('khosach_vip_status') === 'active';
+    let activeDetailBookId = null;
+    let editingBookId = null;
+    const staticUserId = localStorage.getItem('khosach_user_id') || (() => {
+      const id = `user-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      localStorage.setItem('khosach_user_id', id);
+      return id;
+    })();
+    // Set this to the public URL of the FastAPI backend to share books across devices.
+    // Example: https://your-khosach-api.example.com (no trailing slash).
+    const API_BASE_URL = '';
+    const STATIC_DEMO_MODE = !API_BASE_URL;
+    const apiUrl = path => `${API_BASE_URL}${path}`;
+    const assetUrl = path => path && path.startsWith('/') && API_BASE_URL ? `${API_BASE_URL}${path}` : path;
+    const demoAuthors = [
+      { id: 1, name: 'Paulo Coelho', description: 'Nhà văn Brazil, tác giả Nhà Giả Kim.' },
+      { id: 2, name: 'James Clear', description: 'Tác giả Atomic Habits.' },
+      { id: 3, name: 'Dale Carnegie', description: 'Tác giả Đắc Nhân Tâm.' },
+      { id: 4, name: 'Yuval Noah Harari', description: 'Tác giả Sapiens.' },
+      { id: 5, name: 'Robert C. Martin', description: 'Tác giả Clean Code.' },
+      { id: 6, name: 'Daniel Kahneman', description: 'Tác giả Tư Duy Nhanh Và Chậm.' },
+      { id: 7, name: 'Cal Newport', description: 'Tác giả Deep Work.' }
+    ];
+    const demoCategories = [
+      { id: 1, name: 'Văn học & Tiểu thuyết', description: '' },
+      { id: 2, name: 'Phát triển bản thân', description: '' },
+      { id: 3, name: 'Khoa học & Công nghệ', description: '' },
+      { id: 4, name: 'Tâm lý học', description: '' }
+    ];
+    const demoBooks = [
+      { id: 1, title: 'Nhà Giả Kim (The Alchemist)', description: 'Hành trình theo đuổi ước mơ và khám phá kho báu của Santiago.', published_year: 1988, author: demoAuthors[0], category: demoCategories[0], cover_image: './covers/the-alchemist.png' },
+      { id: 2, title: 'Atomic Habits', description: 'Những thay đổi nhỏ mỗi ngày có thể tạo nên kết quả lớn.', published_year: 2018, author: demoAuthors[1], category: demoCategories[1], cover_image: './covers/atomic-habits.png' },
+      { id: 3, title: 'Đắc Nhân Tâm', description: 'Những nguyên tắc giao tiếp và xây dựng mối quan hệ tích cực.', published_year: 1936, author: demoAuthors[2], category: demoCategories[1], cover_image: './covers/dac-nhan-tam.png' },
+      { id: 4, title: 'Sapiens: Lược Sử Loài Người', description: 'Câu chuyện về lịch sử và những bước ngoặt của loài người.', published_year: 2014, author: demoAuthors[3], category: demoCategories[2], cover_image: './covers/sapiens.png' },
+      { id: 5, title: 'Clean Code', description: 'Nguyên tắc viết mã nguồn dễ đọc, kiểm thử và bảo trì.', published_year: 2008, author: demoAuthors[4], category: demoCategories[2], cover_image: './covers/clean-code.png' },
+      { id: 6, title: 'Tư Duy Nhanh Và Chậm', description: 'Khám phá hai hệ thống tư duy ảnh hưởng đến phán đoán của chúng ta.', published_year: 2011, author: demoAuthors[5], category: demoCategories[3], cover_image: './covers/thinking-fast-and-slow.png' },
+      { id: 7, title: 'Deep Work', description: 'Rèn luyện khả năng tập trung sâu trong thế giới nhiều xao nhãng.', published_year: 2016, author: demoAuthors[6], category: demoCategories[1], cover_image: './covers/deep-work.png' }
+    ];
+
+    function readDemoCollection(key, defaults) {
+      try {
+        const saved = localStorage.getItem(`khosach_${key}`);
+        return saved ? JSON.parse(saved) : defaults.map(item => ({ ...item }));
+      } catch (error) {
+        console.warn(`Không thể đọc dữ liệu ${key} trong trình duyệt.`, error);
+        return defaults.map(item => ({ ...item }));
+      }
+    }
+
+    function saveDemoCollection(key, items) {
+      localStorage.setItem(`khosach_${key}`, JSON.stringify(items));
+    }
+
+    function nextDemoId(items) {
+      return items.reduce((highest, item) => Math.max(highest, Number(item.id) || 0), 0) + 1;
+    }
+
+    function formValue(id) {
+      const field = document.getElementById(id);
+      return field && 'value' in field ? String(field.value || '').trim() : '';
+    }
+
+    // Short Vietnamese summaries for the static demo reader.
+    const bookChapters = {
+      '\u004e\u0068\u00e0\u0020\u0047\u0069\u1ea3\u0020\u004b\u0069\u006d': '<h4>H\u00e0nh tr\u00ecnh t\u00ecm kho b\u00e1u</h4><p>Santiago r\u1eddi qu\u00ea nh\u00e0 \u0111\u1ec3 theo \u0111u\u1ed5i gi\u1ea5c m\u01a1 v\u00e0 kh\u00e1m ph\u00e1 th\u1ebf gi\u1edbi. Chuy\u1ebfn \u0111i gi\u00fap c\u1eadu hi\u1ec3u th\u00eam v\u1ec1 l\u00f2ng can \u0111\u1ea3m, s\u1ef1 ki\u00ean tr\u00ec v\u00e0 nh\u1eefng \u0111i\u1ec1u th\u1eadt s\u1ef1 c\u00f3 \u00fd ngh\u0129a v\u1edbi m\u00ecnh.</p>',
+      'Atomic Habits': '<h4>S\u1ee9c m\u1ea1nh c\u1ee7a nh\u1eefng thay \u0111\u1ed5i nh\u1ecf</h4><p>Nh\u1eefng th\u00f3i quen nh\u1ecf, \u0111\u01b0\u1ee3c l\u1eb7p l\u1ea1i \u0111\u1ec1u \u0111\u1eb7n, c\u00f3 th\u1ec3 t\u1ea1o n\u00ean thay \u0111\u1ed5i l\u1edbn theo th\u1eddi gian. H\u00e3y b\u1eaft \u0111\u1ea7u b\u1eb1ng m\u1ed9t b\u01b0\u1edbc d\u1ec5 th\u1ef1c hi\u1ec7n.</p>',
+      '\u0110\u1eafc Nh\u00e2n T\u00e2m': '<h4>Ngh\u1ec7 thu\u1eadt giao ti\u1ebfp t\u00edch c\u1ef1c</h4><p>L\u1eafng nghe ch\u00e2n th\u00e0nh, th\u1ec3 hi\u1ec7n s\u1ef1 tr\u00e2n tr\u1ecdng v\u00e0 th\u1eed nh\u00ecn s\u1ef1 vi\u1ec7c t\u1eeb g\u00f3c nh\u00ecn c\u1ee7a ng\u01b0\u1eddi kh\u00e1c l\u00e0 nh\u1eefng c\u00e1ch gi\u00fap x\u00e2y d\u1ef1ng m\u1ed1i quan h\u1ec7 b\u1ec1n v\u1eefng.</p>',
+      'Sapiens': '<h4>L\u01b0\u1ee3c s\u1eed lo\u00e0i ng\u01b0\u1eddi</h4><p>Cu\u1ed1n s\u00e1ch nh\u00ecn l\u1ea1i nh\u1eefng b\u01b0\u1edbc ngo\u1eb7t \u0111\u00e3 \u0111\u1ecbnh h\u00ecnh x\u00e3 h\u1ed9i lo\u00e0i ng\u01b0\u1eddi, t\u1eeb s\u1ef1 ph\u00e1t tri\u1ec3n c\u1ee7a ng\u00f4n ng\u1eef \u0111\u1ebfn c\u00e1c ni\u1ec1m tin chung.</p>',
+      'Clean Code': '<h4>Vi\u1ebft m\u00e3 d\u1ec5 \u0111\u1ecdc v\u00e0 b\u1ea3o tr\u00ec</h4><p>M\u00e3 ngu\u1ed3n t\u1ed1t c\u1ea7n th\u1ec3 hi\u1ec7n r\u00f5 m\u1ee5c \u0111\u00edch, gi\u1eef m\u1ed7i h\u00e0m t\u1eadp trung v\u00e0o m\u1ed9t nhi\u1ec7m v\u1ee5 v\u00e0 \u0111\u01b0\u1ee3c c\u1ea3i thi\u1ec7n li\u00ean t\u1ee5c.</p>',
+      'T\u01b0 Duy Nhanh': '<h4>Hai c\u00e1ch t\u01b0 duy</h4><p>Con ng\u01b0\u1eddi th\u01b0\u1eddng d\u00f9ng tr\u1ef1c gi\u00e1c nhanh cho c\u00e1c quy\u1ebft \u0111\u1ecbnh quen thu\u1ed9c v\u00e0 t\u01b0 duy ch\u1eadm khi c\u1ea7n ph\u00e2n t\u00edch k\u1ef9. Nh\u1eadn bi\u1ebft l\u00fac n\u00e0o n\u00ean d\u1eebng l\u1ea1i gi\u00fap h\u1ea1n ch\u1ebf sai l\u1ec7ch.</p>',
+      'Deep Work': '<h4>R\u00e8n luy\u1ec7n s\u1ef1 t\u1eadp trung s\u00e2u</h4><p>D\u00e0nh th\u1eddi gian l\u00e0m vi\u1ec7c kh\u00f4ng b\u1ecb gi\u00e1n \u0111o\u1ea1n gi\u00fap x\u1eed l\u00fd nh\u1eefng nhi\u1ec7m v\u1ee5 \u0111\u00f2i h\u1ecfi t\u01b0 duy s\u00e2u. H\u00e3y gi\u1ea3m xao nh\u00e3ng v\u00e0 t\u1ea1o l\u1ecbch t\u1eadp trung ph\u00f9 h\u1ee3p.</p>'
+    };
+
+    // Fallback inline SVG for image error handling
+    function handleImageError(imgEl, title = 'Kho Sách') {
+      imgEl.onerror = null;
+      const safeTitle = encodeURIComponent(title.substring(0, 20));
+      imgEl.src = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='580' viewBox='0 0 400 580'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%231e293b'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='400' height='580' rx='16' fill='url(%23g)'/><rect x='20' y='20' width='360' height='540' rx='12' fill='none' stroke='rgba(255,255,255,0.1)' stroke-width='2'/><circle cx='200' cy='240' r='60' fill='rgba(255,255,255,0.05)'/><text x='200' y='255' text-anchor='middle' font-family='sans-serif' font-size='42'>📚</text><text x='200' y='360' text-anchor='middle' font-family='sans-serif' font-size='18' font-weight='bold' fill='%23ffffff'>${safeTitle}</text><text x='200' y='390' text-anchor='middle' font-family='sans-serif' font-size='12' fill='%2394a3b8'>KHO SÁCH</text></svg>`;
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      const icon = type === 'success' ? '✓' : type === 'vip' ? '👑' : type === 'error' ? '⚠️' : 'ℹ️';
+      const color = type === 'vip' ? '#fbbf24' : type === 'success' ? '#30d158' : '#ff375f';
+      toast.innerHTML = `<span style="color: ${color}; font-weight: bold;">${icon}</span> <span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.transition = 'all 0.3s ease';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-20px) scale(0.9)';
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    function handleOverlayClick(e, id) { if (e.target.id === id) closeModal(id); }
+
+    // Init
+    document.addEventListener('DOMContentLoaded', () => {
+      syncVipUI();
+      fetchCategories();
+      fetchAuthors();
+      fetchBooks();
+
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          document.getElementById('searchInput').focus();
+        }
+      });
+
+      let debounceTimer;
+      document.getElementById('searchInput').addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        document.getElementById('searchClear').style.display = val ? 'flex' : 'none';
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => fetchBooks(), 300);
+      });
+    });
+
+    function syncVipUI() {
+      const btn = document.getElementById('vipBtn');
+      const stat = document.getElementById('statVipStatus');
+      if (isVipUser) {
+        btn.className = 'btn btn-vip-active';
+        btn.innerHTML = '<span>👑</span> Đã Kích Hoạt VIP';
+        btn.onclick = () => showToast('Bạn đang sở hữu đặc quyền VIP trọn đời!', 'vip');
+        stat.textContent = '👑 VIP ($100)';
+        stat.style.color = '#fbbf24';
+      } else {
+        btn.className = 'btn btn-vip';
+        btn.innerHTML = '<span>👑</span> Mua VIP ($100)';
+        btn.onclick = openVipModal;
+        stat.textContent = 'Miễn Phí';
+        stat.style.color = '#fff';
+      }
+    }
+
+    function openVipModal() {
+      openModal('vipModal');
+    }
+
+    async function processVipPayment() {
+      if (STATIC_DEMO_MODE) {
+        showToast('Bản demo tĩnh chưa kết nối hệ thống thanh toán.', 'error');
+        return;
+      }
+      const btn = document.getElementById('confirmVipBtn');
+      btn.disabled = true;
+      btn.textContent = 'Đang xử lý giao dịch $100 USD...';
+
+      try {
+        const res = await fetch(apiUrl('/api/vip/subscribe'), { method: 'POST' });
+        const data = await res.json();
+        
+        isVipUser = true;
+        localStorage.setItem('khosach_vip_status', 'active');
+        syncVipUI();
+        closeModal('vipModal');
+        showToast(data.message || 'Chúc mừng bạn đã nâng cấp VIP thành công!', 'vip');
+        renderBooks(booksData);
+      } catch (err) {
+        showToast('Giao dịch lỗi, xin thử lại!', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<span>👑</span> Xác Nhận Mua Gói VIP ($100 USD)';
+      }
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('searchInput');
+      input.value = '';
+      document.getElementById('searchClear').style.display = 'none';
+      fetchBooks();
+    }
+
+    // Data Fetching
+    async function fetchCategories() {
+      if (STATIC_DEMO_MODE) {
+        categoriesData = readDemoCollection('categories', demoCategories);
+        renderCategoryPills();
+        populateCategorySelect();
+        updateStats();
+        return;
+      }
+      try {
+        const res = await fetch(apiUrl('/categories/'));
+        categoriesData = await res.json();
+        renderCategoryPills();
+        populateCategorySelect();
+        updateStats();
+      } catch (err) { console.error(err); }
+    }
+
+    async function fetchAuthors() {
+      if (STATIC_DEMO_MODE) {
+        authorsData = readDemoCollection('authors', demoAuthors);
+        populateAuthorSelects();
+        updateStats();
+        return;
+      }
+      try {
+        const res = await fetch(apiUrl('/authors/'));
+        authorsData = await res.json();
+        populateAuthorSelects();
+        updateStats();
+      } catch (err) { console.error(err); }
+    }
+
+    async function fetchBooks() {
+      if (STATIC_DEMO_MODE) {
+        const keyword = document.getElementById('searchInput').value.trim().toLocaleLowerCase();
+        const authorId = document.getElementById('authorSelectFilter').value;
+        const allBooks = readDemoCollection('books', demoBooks);
+        const visibleBooks = allBooks.filter(book => {
+          const matchesKeyword = !keyword || `${book.title} ${book.description} ${book.author.name} ${book.category.name}`.toLocaleLowerCase().includes(keyword);
+          const matchesCategory = currentCategoryId === null || book.category.id === currentCategoryId;
+          const matchesAuthor = !authorId || book.author.id === Number(authorId);
+          return matchesKeyword && matchesCategory && matchesAuthor;
+        });
+        booksData = visibleBooks;
+        renderBooks(booksData);
+        updateStats();
+        return;
+      }
+      const keyword = document.getElementById('searchInput').value.trim();
+      const authorId = document.getElementById('authorSelectFilter').value;
+      const [sortBy, sortOrder] = document.getElementById('sortSelect').value.split('-');
+
+      let url = apiUrl(`/books/?sort_by=${sortBy}&sort_order=${sortOrder}`);
+      if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+      if (currentCategoryId) url += `&category_id=${currentCategoryId}`;
+      if (authorId) url += `&author_id=${authorId}`;
+
+      try {
+        const res = await fetch(url);
+        booksData = await res.json();
+        renderBooks(booksData);
+        updateStats();
+      } catch (err) {
+        console.error(err);
+        showToast('Không thể kết nối API', 'error');
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('statTotalBooks').textContent = booksData.length;
+      document.getElementById('statTotalAuthors').textContent = authorsData.length;
+      document.getElementById('statTotalCategories').textContent = categoriesData.length;
+    }
+
+    function renderCategoryPills() {
+      const container = document.getElementById('categoryPills');
+      container.innerHTML = `<button class="pill ${currentCategoryId === null ? 'active' : ''}" onclick="selectCategory(null, this)">Tất Cả Thể Loại</button>`;
+      categoriesData.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = `pill ${currentCategoryId === cat.id ? 'active' : ''}`;
+        btn.textContent = cat.name;
+        btn.onclick = () => selectCategory(cat.id, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function selectCategory(catId, btnElement) {
+      currentCategoryId = catId;
+      document.querySelectorAll('#categoryPills .pill').forEach(p => p.classList.remove('active'));
+      btnElement.classList.add('active');
+      fetchBooks();
+    }
+
+    function filterBooks() { fetchBooks(); }
+
+    function populateAuthorSelects() {
+      const filterSelect = document.getElementById('authorSelectFilter');
+      const modalSelect = document.getElementById('bookAuthor');
+      if (filterSelect) {
+        filterSelect.innerHTML = '<option value="">Tất Cả Tác Giả</option>';
+        authorsData.forEach(author => {
+          filterSelect.insertAdjacentHTML('beforeend', `<option value="${author.id}">${escapeHtml(author.name)}</option>`);
+        });
+      }
+      if (modalSelect) {
+        modalSelect.innerHTML = '<option value="">Chọn tác giả...</option>';
+        authorsData.forEach(author => {
+          modalSelect.insertAdjacentHTML('beforeend', `<option value="${author.id}">${escapeHtml(author.name)}</option>`);
+        });
+      }
+    }
+
+    function populateCategorySelect() {
+      const modalSelect = document.getElementById('bookCategory');
+      if (!modalSelect) return;
+      modalSelect.innerHTML = '<option value="">Chọn thể loại...</option>';
+      categoriesData.forEach(cat => {
+        modalSelect.insertAdjacentHTML('beforeend', `<option value="${cat.id}">${escapeHtml(cat.name)}</option>`);
+      });
+    }
+
+    // Render Books Grid
+    function renderBooks(books) {
+      const grid = document.getElementById('booksGrid');
+      const countEl = document.getElementById('booksCount');
+      countEl.textContent = `Hiển thị ${books.length} tác phẩm`;
+
+      if (!books || books.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📖</div>
+            <h3>Không tìm thấy cuốn sách nào</h3>
+            <p>Hãy thử tìm kiếm với từ khóa khác hoặc xóa bớt bộ lọc.</p>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = books.map(book => {
+        const coverSrc = assetUrl(book.cover_image || './covers/the-alchemist.png');
+        const authorName = book.author ? book.author.name : 'Chưa rõ';
+        const catName = book.category ? book.category.name : 'Sách Tuyển Chọn';
+        const canReadSample = isVipUser || STATIC_DEMO_MODE;
+        const readBtnClass = canReadSample ? 'read-btn' : 'read-btn vip-locked';
+        const readBtnText = canReadSample ? '<span>📖</span> Đọc Sách' : '<span>🔒</span> Đọc Sách (VIP $100)';
+
+        return `
+          <div class="book-card liquid-glass" onclick="openDetailModal(${book.id})">
+            <div class="cover-container">
+              <img 
+                class="cover-img" 
+                src="${coverSrc}" 
+                alt="${escapeHtml(book.title)}" 
+                loading="lazy" 
+                onerror="handleImageError(this, '${escapeHtml(book.title)}')"
+              >
+              <div class="cover-badge">${book.published_year}</div>
+            </div>
+            <div class="card-body">
+              <div class="book-category">${escapeHtml(catName)}</div>
+              <h3 class="book-title" title="${escapeHtml(book.title)}">${escapeHtml(book.title)}</h3>
+              <div class="book-author">
+                <span>✍ï¸</span>
+                <span>${escapeHtml(authorName)}</span>
+              </div>
+              <p class="book-desc">${escapeHtml(book.description || 'Chưa có tóm tắt.')}</p>
+            </div>
+            <div class="card-footer" onclick="event.stopPropagation()">
+              <button class="${readBtnClass}" style="width: 100%;" onclick="handleReadClick(event, ${book.id})">
+                ${readBtnText}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Read Book Click
+    function handleReadClick(e, bookId) {
+      e.stopPropagation();
+      const book = booksData.find(b => b.id === bookId);
+      if (!book) return;
+
+      if (!isVipUser && !STATIC_DEMO_MODE) {
+        showToast('Nội dung đọc sách chỉ dành riêng cho thành viên VIP ($100)!', 'vip');
+        openVipModal();
+        return;
+      }
+
+      // Open Reader
+      document.getElementById('readerBookTitle').textContent = book.title;
+      let contentKey = Object.keys(bookChapters).find(k => book.title.includes(k));
+      const savedContent = book.content || (contentKey ? bookChapters[contentKey] : '');
+      let contentHtml = savedContent
+        ? (book.content ? `<div style="white-space:pre-wrap">${escapeHtml(savedContent)}</div>` : savedContent)
+        : `<p>${escapeHtml(book.description || 'Chưa có nội dung đọc. Hãy mở nguồn sách chính thống nếu có.')}</p>`;
+      document.getElementById('readerContent').innerHTML = contentHtml;
+      if (!savedContent && book.source_url) window.open(book.source_url, '_blank', 'noopener,noreferrer');
+      openModal('readerModal');
+    }
+
+    // Detail Modal
+    function openDetailModal(bookId) {
+      const book = booksData.find(b => b.id === bookId);
+      if (!book) return;
+      activeDetailBookId = bookId;
+
+      document.getElementById('detailBookTitle').textContent = book.title;
+      document.getElementById('detailAuthor').innerHTML = `✍ï¸ Tác giả: <strong>${book.author ? book.author.name : 'Chưa rõ'}</strong>`;
+      document.getElementById('detailCategory').textContent = book.category ? book.category.name : 'SÁCH';
+      document.getElementById('detailYear').textContent = `Năm xuất bản: ${book.published_year}`;
+      document.getElementById('detailDesc').textContent = book.description || 'Chưa có phần giới thiệu chi tiết.';
+      const sourceLink = document.getElementById('detailSourceLink');
+      if (book.source_url) {
+        sourceLink.href = book.source_url;
+        sourceLink.style.display = 'block';
+      } else sourceLink.style.display = 'none';
+      document.getElementById('detailEditBtn').style.display = book.owner_id === staticUserId ? 'block' : 'none';
+      
+      const coverEl = document.getElementById('detailCover');
+      coverEl.src = assetUrl(book.cover_image || './covers/the-alchemist.png');
+      coverEl.onerror = () => handleImageError(coverEl, book.title);
+
+      const readBtn = document.getElementById('detailReadBtn');
+      readBtn.innerHTML = (isVipUser || STATIC_DEMO_MODE) ? '<span>📖</span> Đọc Tác Phẩm Này' : '<span>🔒</span> Mở Khóa Đọc Sách (VIP $100)';
+      readBtn.onclick = (e) => {
+        closeModal('detailModal');
+        handleReadClick(e, book.id);
+      };
+
+      openModal('detailModal');
+    }
+
+    // Add / Edit Modal Controls
+    function openAddBookModal() {
+      editingBookId = null;
+      document.getElementById('modalTitle').textContent = 'Thêm Sách Mới';
+      document.getElementById('bookId').value = '';
+      document.getElementById('bookForm').reset();
+      document.getElementById('bookCoverImage').value = './covers/the-alchemist.png';
+      document.getElementById('coverPreviewBox').style.display = 'none';
+      pendingCoverFile = null;
+      openModal('bookModal');
+    }
+
+    function editBookFromDetail() {
+      const book = booksData.find(item => item.id === activeDetailBookId);
+      if (!book || book.owner_id !== staticUserId) {
+        showToast('Bạn chỉ có thể sửa sách do chính mình tạo.', 'error');
+        return;
+      }
+      editingBookId = book.id;
+      closeModal('detailModal');
+      document.getElementById('modalTitle').textContent = 'Chỉnh sửa sách của tôi';
+      document.getElementById('bookId').value = book.id;
+      document.getElementById('bookTitle').value = book.title || '';
+      document.getElementById('bookAuthorName').value = book.author?.name || '';
+      document.getElementById('bookCategoryName').value = book.category?.name || '';
+      document.getElementById('bookYear').value = book.published_year || '';
+      document.getElementById('bookDescription').value = book.description || '';
+      document.getElementById('bookContent').value = book.content || '';
+      document.getElementById('bookSourceUrl').value = book.source_url || '';
+      document.getElementById('bookCoverImage').value = book.cover_image || '';
+      document.getElementById('coverPreviewBox').style.display = 'none';
+      pendingCoverFile = null;
+      openModal('bookModal');
+    }
+
+    function selectPresetCover(val) {
+      if (!val) return;
+      document.getElementById('bookCoverImage').value = val;
+      document.getElementById('coverPreviewImg').src = val;
+      document.getElementById('coverPreviewName').textContent = 'Mẫu bìa đã chọn';
+      document.getElementById('coverPreviewBox').style.display = 'flex';
+      pendingCoverFile = null;
+    }
+
+    function handleCoverFileSelected(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      pendingCoverFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('coverPreviewImg').src = e.target.result;
+        document.getElementById('coverPreviewName').textContent = file.name;
+        document.getElementById('coverPreviewBox').style.display = 'flex';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Submit Book (Tạo mới kèm tên tác giả & thể loại trực tiếp)
+    async function handleBookSubmit(event) {
+      event.preventDefault();
+      if (STATIC_DEMO_MODE) {
+        const title = formValue('bookTitle');
+        const authorName = formValue('bookAuthorName');
+        const categoryName = formValue('bookCategoryName');
+        const year = Number(formValue('bookYear'));
+        if (!title || !authorName || !categoryName || !year) {
+          showToast('Vui lòng nhập tên sách, tác giả, thể loại và năm xuất bản.', 'error');
+          return;
+        }
+
+        if (pendingCoverFile && pendingCoverFile.size > 1024 * 1024) {
+          showToast('Ảnh bìa trong bản tĩnh cần nhỏ hơn 1 MB. Hãy chọn ảnh khác.', 'error');
+          return;
+        }
+
+        const authors = readDemoCollection('authors', demoAuthors);
+        const categories = readDemoCollection('categories', demoCategories);
+        const books = readDemoCollection('books', demoBooks);
+        const normalizeName = value => value.trim().toLocaleLowerCase();
+        let author = authors.find(item => normalizeName(item.name) === normalizeName(authorName));
+        if (!author) {
+          author = { id: nextDemoId(authors), name: authorName, description: '' };
+          authors.push(author);
+        }
+        let category = categories.find(item => normalizeName(item.name) === normalizeName(categoryName));
+        if (!category) {
+          category = { id: nextDemoId(categories), name: categoryName, description: '' };
+          categories.push(category);
+        }
+
+        let coverImage = formValue('bookCoverImage') || './covers/the-alchemist.png';
+        try {
+          if (pendingCoverFile) {
+            coverImage = await new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(reader.result);
+              reader.onerror = () => reject(new Error('Không đọc được ảnh bìa.'));
+              reader.readAsDataURL(pendingCoverFile);
+            });
+          }
+          const target = editingBookId ? books.find(item => item.id === editingBookId && item.owner_id === staticUserId) : null;
+          if (editingBookId && !target) throw new Error('Không có quyền sửa sách này.');
+          const bookRecord = {
+            ...(target || {}),
+            id: target ? target.id : nextDemoId(books),
+            title,
+            description: formValue('bookDescription'),
+            content: formValue('bookContent'),
+            source_url: formValue('bookSourceUrl'),
+            published_year: year,
+            author,
+            category,
+            cover_image: coverImage,
+            owner_id: target ? target.owner_id : staticUserId
+          };
+          if (target) Object.assign(target, bookRecord);
+          else books.unshift(bookRecord);
+          saveDemoCollection('authors', authors);
+          saveDemoCollection('categories', categories);
+          saveDemoCollection('books', books);
+          await fetchCategories();
+          await fetchAuthors();
+          await fetchBooks();
+          document.getElementById('bookForm')?.reset();
+          const previewBox = document.getElementById('coverPreviewBox');
+          if (previewBox) previewBox.style.display = 'none';
+          pendingCoverFile = null;
+          closeModal('bookModal');
+          editingBookId = null;
+          showToast(target ? `Đã cập nhật sách “${title}”.` : `Đã thêm sách “${title}”; tác giả và thể loại mới đã được lưu.`);
+        } catch (error) {
+          showToast(`Không thể lưu sách trong trình duyệt: ${error.message}`, 'error');
+        }
+        return;
+      }
+      const saveBtn = document.getElementById('saveBookBtn');
+      saveBtn.disabled = true;
+      saveBtn.textContent = 'Đang lưu...';
+
+      const payload = {
+        title: formValue('bookTitle'),
+        author_name: formValue('bookAuthorName'),
+        category_name: formValue('bookCategoryName'),
+        published_year: Number(formValue('bookYear')),
+        description: formValue('bookDescription'),
+        cover_image: formValue('bookCoverImage') || './covers/the-alchemist.png'
+      };
+
+      try {
+        const res = await fetch(apiUrl('/books/'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({ detail: res.statusText }));
+          throw new Error(errData.detail || 'Không thể tạo sách');
+        }
+        const savedBook = await res.json();
+        showToast(`Đã thêm mới tác phẩm "${savedBook.title}"!`);
+
+        // Tải ảnh bìa tùy chọn nếu người dùng chọn file
+        if (pendingCoverFile && savedBook && savedBook.id) {
+          const formData = new FormData();
+          formData.append('file', pendingCoverFile);
+          await fetch(apiUrl(`/books/${savedBook.id}/cover`), {
+            method: 'POST',
+            body: formData
+          });
+        }
+
+        closeModal('bookModal');
+        // Tự động làm mới danh mục & tác giả mới tạo
+        await fetchCategories();
+        await fetchAuthors();
+        await fetchBooks();
+      } catch (err) {
+        showToast('Lỗi: ' + err.message, 'error');
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Lưu Tác Phẩm';
+      }
+    }
+
+    function openAuthorCatModal() { openModal('authorCatModal'); }
+
+    async function handleAddAuthor(e) {
+      e.preventDefault();
+      if (STATIC_DEMO_MODE) {
+        const name = formValue('newAuthorName');
+        const description = formValue('newAuthorBio');
+        if (!name) return;
+        const authors = readDemoCollection('authors', demoAuthors);
+        if (authors.some(item => item.name.toLocaleLowerCase() === name.toLocaleLowerCase())) {
+          showToast('Tác giả này đã có trong danh sách.', 'error');
+          return;
+        }
+        authors.push({ id: nextDemoId(authors), name, description });
+        saveDemoCollection('authors', authors);
+        document.getElementById('authorForm')?.reset();
+        await fetchAuthors();
+        showToast(`Đã thêm tác giả “${name}”.`);
+        return;
+      }
+      const name = formValue('newAuthorName');
+      const bio = formValue('newAuthorBio');
+      if (!name) return;
+
+      try {
+        const res = await fetch(apiUrl('/authors/'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: bio })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        showToast(`Đã thêm tác giả "${name}"`);
+        document.getElementById('authorForm').reset();
+        fetchAuthors();
+      } catch (err) {
+        showToast('Lỗi: ' + err.message, 'error');
+      }
+    }
+
+    async function handleAddCategory(e) {
+      e.preventDefault();
+      if (STATIC_DEMO_MODE) {
+        const name = formValue('newCategoryName');
+        const description = formValue('newCategoryDesc');
+        if (!name) return;
+        const categories = readDemoCollection('categories', demoCategories);
+        if (categories.some(item => item.name.toLocaleLowerCase() === name.toLocaleLowerCase())) {
+          showToast('Thể loại này đã có trong danh sách.', 'error');
+          return;
+        }
+        categories.push({ id: nextDemoId(categories), name, description });
+        saveDemoCollection('categories', categories);
+        document.getElementById('categoryForm')?.reset();
+        await fetchCategories();
+        showToast(`Đã thêm thể loại “${name}”.`);
+        return;
+      }
+      const name = formValue('newCategoryName');
+      const desc = formValue('newCategoryDesc');
+      if (!name) return;
+
+      try {
+        const res = await fetch(apiUrl('/categories/'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description: desc })
+        });
+        if (!res.ok) throw new Error(await res.text());
+        showToast(`Đã thêm thể loại "${name}"`);
+        document.getElementById('categoryForm').reset();
+        fetchCategories();
+      } catch (err) {
+        showToast('Lỗi: ' + err.message, 'error');
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  </script>
+</body>
+</html>
+
